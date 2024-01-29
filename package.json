@@ -1,15 +1,18 @@
 {
   "name": "mongo-assert",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.ts",
+  "description": "Lightweight schema validation for MongoDB with Zod",
+  "author": "Mikayla Dobson",
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist/**/*"],
   "scripts": {
     "build": "tsc",
     "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["validation", "typechecking", "typescript", "schema", "mongodb", "mongo", "zod", "testing", "build", "ci", "continuous integration"],
   "license": "ISC",
   "peerDependencies": {
     "mongodb": "^6.3.0",
