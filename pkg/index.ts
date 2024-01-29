@@ -5,8 +5,8 @@ import { AssertConstrained } from './actions/constrained';
 export type { AssertUniqueType } from "./actions/unique";
 export type { AssertRelationType } from "./actions/relation";
 
-export default class MongoAssert {
-    static unique = AssertUnique;
-    static relation = AssertRelation;
-    static constrained = AssertConstrained;
+export default class MongoValidator {
+    static assertUnique = AssertUnique;
+    static assertRelation = AssertRelation;
+    static assertConstrained = AssertConstrained;
 }

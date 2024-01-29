@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import MongoValidator from '..';
+import MongoAssert from '..';
 import dotenv from 'dotenv';
 import path from 'path';
-import { createMongoClient, ObjectId } from '../pkg/lib/mongodb';
+import { createMongoClient, ObjectId } from '../lib/mongodb';
 
 dotenv.config();
 
@@ -52,10 +52,10 @@ async function main() {
         type AssertUniqueType<T extends Record<string, unknown>> = z.ZodEffects<z.ZodArray<z.ZodType<T>>, T[], unknown>;
 
         // validate against internal schema
-        const MusicEntryValidator = MongoValidator.unique.fromSchema(MusicEntry, ["slug"]) satisfies AssertUniqueType<MusicEntryType>;
-        const MusicCollections = MongoValidator.unique.fromSchema(MusicCollection, ["collectionslug"]);
+        const MusicEntryValidator = MongoAssert.assertUnique.fromSchema(MusicEntry, ["slug"]) satisfies AssertUniqueType<MusicEntryType>;
+        const MusicCollections = MongoAssert.assertUnique.fromSchema(MusicCollection, ["collectionslug"]);
 
-        const result: Promise<number | undefined> = MongoValidator.relation.check({
+        const result: Promise<number | undefined> = MongoAssert.assertRelation.check({
             db: "mikayladotdev",
             mainCollection: "music",
             relationCollection: "music-collection",

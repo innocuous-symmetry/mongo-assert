@@ -1,5 +1,5 @@
 {
-  "name": "mongo-assert",
+  "name": "mongo-validate",
   "version": "0.0.1",
   "description": "Lightweight schema validation for MongoDB with Zod",
   "author": "Mikayla Dobson",

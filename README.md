@@ -1,8 +1,8 @@
-# Mongo Assert
+# Mongo Validate
 
 Stronger, more intuitive type checking and assertions for MongoDB.
 
-Mongo Assert extends the functionality of Zod, integrated with the MongoDB Node.js driver, to provide a more intuitive and powerful way to validate and assert MongoDB documents.
+Mongo Validate extends the functionality of Zod, integrated with the MongoDB Node.js driver, to provide a more intuitive and powerful way to validate MongoDB documents.
 
 Some of its features include:
 
@@ -12,20 +12,20 @@ Some of its features include:
 
 ## But why?
 
-Mongo Assert is something I put together out of frustration with existing, heavy handed solutions for MongoDB schema management. Mongo Assert is intended to have a minimal footprint, add on to  existing validation infrastructure, and plug in seamlessly to build-time integrity checks.
+Mongo Validate is something I put together out of frustration with existing, heavy handed solutions for MongoDB schema management. Mongo Validate is intended to have a minimal footprint, add on to  existing validation infrastructure, and plug in seamlessly to build-time integrity checks.
 
 ## Usage
 
-Mongo Assert is available as an NPM package. To install it, run:
+Mongo Validate is available as an NPM package. To install it, run:
 
 ```bash
-npm install mongo-assert
-pnpm install mongo-assert
-yarn add mongo-assert
-bun install mongo-assert
+npm install mongo-validate
+pnpm install mongo-validate
+yarn add mongo-validate
+bun install mongo-validate
 ```
 
-Mongo Assert supports Zod schemas out of the box, so any schemas you may already have defined can be used
+Mongo Validate supports Zod schemas out of the box, so any schemas you may already have defined can be used
 with any MongoDB instance.
 
 ## Examples
@@ -36,7 +36,7 @@ For all of the examples below, we'll be using the following schema:
 
 ```ts
 import { z } from 'zod';
-import { ObjectId } from "mongo-assert/lib/mongodb"
+import { ObjectId } from "mongo-validate/lib/mongodb"
 
 export const userSchema = z.object({
     _id: ObjectId,
@@ -49,13 +49,14 @@ export type User = z.infer<typeof userSchema>;
 
 ### Unique field validation
 
-Mongo Assert extends Zod schemas to check that your documents match the desired schema. For example:
+Mongo Validate extends Zod schemas to check that your documents match the desired schema. For example:
 
 ```ts
-import MongoAssert, { type AssertUniqueType } from 'mongo-assert';
+import mongo-validate, { type AssertUniqueType } from 'mongo-validate';
 import { userSchema, type User } from "./schemas";
 
-export const UserEmailsUniqueValidator: AssertUniqueType<User> = MongoAssert.unique.fromSchema(userSchema, ["email"]);
+export const UserEmailsUniqueValidator = MongoValidate.assertUnique.fromSchema(userSchema, ["email"]);
+//               ^? AssertUniqueType<User>
 ```
 
 The returned object is a Zod schema that can be directly invoked to validate a result from MongoDB. This object
@@ -87,7 +88,7 @@ async function main() {
 
 ### Reference validation
 
-Mongo Assert also supports validation of references to other collections.
+Mongo Validate also supports validation of references to other collections.
 
 For example, suppose we have a collection of `Store`s that must be associated to an existing `User`. Let's define our schema first:
 
@@ -107,9 +108,9 @@ export type Store = z.infer<typeof storeSchema>;
 Now, we can define a reference validator between these two collections:
 
 ```ts
-import MongoAssert from 'mongo-assert';
+import mongo-validate from 'mongo-validate';
 
-const StoresHaveOwnersValidator = new MongoAssert.relation({
+const StoresHaveOwnersValidator = new MongoValidate.assertRelation({
     db: "your-db",
     mainCollection: "users",
     relationCollection: "stores",
