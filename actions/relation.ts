@@ -1,8 +1,12 @@
 import { z } from "zod";
-import createMongoClient from "../lib/mongoClient";
+import { createMongoClient } from "../lib/mongodb";
+import { MongoClient, MongoClientOptions } from "mongodb";
+import { WeakDict } from "../lib/types";
 
+export type AssertRelationType<T extends WeakDict, R extends WeakDict> = {};
 export type AssertRelationConfig<T extends Record<string, unknown>, R extends Record<string, unknown>> = {
     db: string;
+    client?: MongoClient
     mainCollection: string;
     mainSchema: z.ZodSchema<T>;
     relationCollection: string;
@@ -10,7 +14,15 @@ export type AssertRelationConfig<T extends Record<string, unknown>, R extends Re
     relations: {
         [key in keyof T]?: keyof R;
     }
-}
+} & ({
+    connectionDetails?: undefined
+    client?: MongoClient
+} | {
+    connectionDetails: {
+        url: string;
+        options: MongoClientOptions;
+    }
+})
 
 export class AssertRelation<T extends Record<string, unknown>, R extends Record<string, unknown>> {
     config: AssertRelationConfig<T, R>;
@@ -26,8 +38,12 @@ export class AssertRelation<T extends Record<string, unknown>, R extends Record<
 
     async check() {
         try {
-            const client = await createMongoClient();
-            if (!client) return null;
+            let client: MongoClient | undefined = this.config.client;
+
+            if (!client && this.config.connectionDetails?.url)
+                client = await createMongoClient(this.config.connectionDetails.url, this.config.connectionDetails?.options);
+
+            if (!client) return;
 
             const db = client.db(this.config.db);
             const collection = db.collection(this.config.mainCollection);
@@ -61,7 +77,7 @@ export class AssertRelation<T extends Record<string, unknown>, R extends Record<
             return i;
         } catch(e) {
             console.log(e);
-            return null;
+            return;
         }
     }
 }

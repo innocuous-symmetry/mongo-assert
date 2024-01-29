@@ -1,19 +1,30 @@
 import type { z } from 'zod';
 
-export type CollectionParameters<T> = Partial<Record<keyof T, { unique?: boolean }>>
+export type AssertUniqueType<T extends Record<string, unknown>> = z.ZodEffects<z.ZodArray<z.ZodType<T>>, T[], unknown>;
 
-export const AssertUnique = <T>(itemSchema: z.ZodSchema<T>, parameters?: CollectionParameters<T>) =>
-    itemSchema.array().refine((val) => {
-        for (const key in parameters) {
-            const value = parameters[key as keyof CollectionParameters<T>];
-            const unique = value?.unique ?? false;
+export class AssertUnique<T extends Record<string, unknown>> {
+    itemSchema: z.ZodSchema<T>;
+    uniqueValues?: (keyof T)[];
 
-            if (unique) {
+    constructor(itemSchema: z.ZodSchema<T>, uniqueValues?: (keyof T)[]) {
+        this.itemSchema = itemSchema;
+        this.uniqueValues = uniqueValues;
+    }
+
+    fromSchema() {
+        return AssertUnique.fromSchema(this.itemSchema, this.uniqueValues) satisfies AssertUniqueType<T>;
+    }
+
+    static fromSchema<T extends Record<string, unknown>>(
+        itemSchema: z.ZodSchema<T>, uniqueValues?: (keyof T)[]
+    ) {
+        return itemSchema.array().refine((val) => {
+            for (const key of uniqueValues ?? []) {
                 const values = val.map((item) => item[key as keyof T]);
                 return values.length === new Set(values).size;
             }
-        }
-    }, {
-        message: "Encountered duplicate values in unique field"
+        }, {
+            message: "Encountered duplicate values in unique field"
+        }) satisfies AssertUniqueType<T>;
     }
-);
+}
