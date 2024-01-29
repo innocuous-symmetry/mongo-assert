@@ -2,7 +2,7 @@ import { z } from 'zod';
 import MongoAssert from '..';
 import dotenv from 'dotenv';
 import path from 'path';
-import { createMongoClient, ObjectId } from '../lib/mongodb';
+import { createMongoClient, ObjectId } from '../pkg/lib/mongodb';
 
 dotenv.config();
 

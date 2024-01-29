@@ -1,4 +1,4 @@
-import { MongoClient, MongoClientOptions } from "mongodb";
+import { MongoClient, type MongoClientOptions } from "mongodb";
 import { z } from "zod";
 
 // mongodb ObjectId as zod schema (we'll settle on our definition later)
